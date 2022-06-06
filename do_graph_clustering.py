@@ -12,17 +12,17 @@ def do_graph_clustering(countries:np.ndarray,covid_stats:pd.DataFrame,graph_titl
     graph = nx.Graph()
     g_structure = []
     for i in range(len(countries)):
-        country_a_stats = covid_stats[covid_stats["countryterritoryCode"] == countries[i]]
+        country_a_stats = covid_stats[covid_stats["geoId"] == countries[i]]
         for j in range(i,len(countries)):
-            country_b_stats = covid_stats[covid_stats["countryterritoryCode"] == countries[j]]
+            country_b_stats = covid_stats[covid_stats["geoId"] == countries[j]]
             if countries[i] == countries[j]:
                 continue
             
-            samples = len(country_a_stats["countryterritoryCode"])
-            if len(country_a_stats["countryterritoryCode"]) > len(country_b_stats["countryterritoryCode"]):
-                samples = len(country_b_stats["countryterritoryCode"])
-            elif len(country_a_stats["countryterritoryCode"]) < len(country_b_stats["countryterritoryCode"]): 
-                samples = len(country_a_stats["countryterritoryCode"])
+            samples = len(country_a_stats["geoId"])
+            if len(country_a_stats["geoId"]) > len(country_b_stats["geoId"]):
+                samples = len(country_b_stats["geoId"])
+            elif len(country_a_stats["geoId"]) < len(country_b_stats["geoId"]): 
+                samples = len(country_a_stats["geoId"])
                 
             country_b_stats.fillna(method="ffill", inplace=True)
             cases_country_a = country_a_stats["cases"][:samples]
