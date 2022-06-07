@@ -9,7 +9,7 @@ df_2020 = df[df['year'] < 2021].groupby("geoId").agg(
     {'cases': sum, 'deaths': sum})
 
 df_2020["IFR"] = df_2020["deaths"].div(df_2020["cases"].values)
-df_2020.to_csv('covid_19(2020).csv')
+df_2020.to_csv('eu_covid_19(2020).csv')
 
 # sum calculation of cases and deaths for 2021-2022 per country
 df_2021_2022 = df[df['year'] >= 2021].groupby("geoId").agg(
@@ -21,4 +21,4 @@ covid_19_all = pd.merge(df_vac_21_22, df_2021_2022,
                   on='geoId',
                  how='inner')
 
-covid_19_all.to_csv('covid_19(2021-2022).csv')
+covid_19_all.to_csv('eu_covid_19(2021-2022).csv')
