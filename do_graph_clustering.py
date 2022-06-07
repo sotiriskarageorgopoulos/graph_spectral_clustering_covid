@@ -1,43 +1,23 @@
 import networkx as nx
 import pandas as pd 
-import numpy as np
-from sklearn.cluster import SpectralClustering
-from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
+from sklearn.cluster import SpectralClustering
 from predict_k import predict_k
+from gaussian_similarity import gaussian_similarity_kernel
 import warnings
 warnings.filterwarnings("ignore")
 
-def do_graph_clustering(countries:np.ndarray,covid_stats:pd.DataFrame,graph_title:str):
+def do_graph_clustering(covid_stats:pd.DataFrame,graph_title:str):
+    countries =  covid_stats.to_numpy()
     graph = nx.Graph()
     g_structure = []
     for i in range(len(countries)):
-        country_a_stats = covid_stats[covid_stats["geoId"] == countries[i]]
         for j in range(i,len(countries)):
-            country_b_stats = covid_stats[covid_stats["geoId"] == countries[j]]
-            if countries[i] == countries[j]:
+            if countries[i][0] == countries[j][0]:
                 continue
             
-            samples = len(country_a_stats["geoId"])
-            if len(country_a_stats["geoId"]) > len(country_b_stats["geoId"]):
-                samples = len(country_b_stats["geoId"])
-            elif len(country_a_stats["geoId"]) < len(country_b_stats["geoId"]): 
-                samples = len(country_a_stats["geoId"])
-                
-            country_b_stats.fillna(method="ffill", inplace=True)
-            cases_country_a = country_a_stats["cases"][:samples]
-            deaths_country_a = country_a_stats["deaths"][:samples]
-            
-            cases_country_b = country_b_stats["cases"][:samples]
-            deaths_country_b = country_b_stats["deaths"][:samples]
-            
-            cases_corr,p_val_1 = pearsonr(cases_country_a,cases_country_b)
-            deaths_corr,p_val_2 = pearsonr(deaths_country_a,deaths_country_b)
-            
-            # print(f"({cases_corr},{deaths_corr})")
-            weight = (cases_corr + deaths_corr) / 2
-            
-            a_edge_b = (countries[i],countries[j],{"weight": weight})
+            weight = gaussian_similarity_kernel(countries[i][1:],countries[j][1:],1)
+            a_edge_b = (countries[i][0],countries[j][0],{"weight": weight})
             g_structure.append(a_edge_b)
         
     graph.add_edges_from(g_structure)
