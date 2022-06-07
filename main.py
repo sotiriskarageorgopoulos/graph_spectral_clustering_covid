@@ -1,8 +1,6 @@
 import pandas as pd
 from do_graph_clustering import do_graph_clustering 
 
-countries = pd.read_csv("./data/eu_countries.csv")["geoId"].to_numpy() #EU countries
-
 #Cluster of countries according to cases and deaths before vaccinations
 
 covid_stats_bef_vacc = pd.read_csv("./data/covid_19(2020).csv")
